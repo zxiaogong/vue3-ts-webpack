@@ -31,6 +31,6 @@
 打包： yarn run build
 ```
 ```
-启动mock：新开一个终端输入 yarn start mock
+启动mock：新开一个终端输入 yarn run mock
 ```
 
