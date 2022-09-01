@@ -3,8 +3,11 @@ const express = require('express');    //引入express模块
 const app = express();                //实例化express
 const path = require("path");
 const fs = require('fs');
+const bodyParser = require('body-parser')
 
 console.log("✨✨✨✨✨✨✨✨✨✨✨ start mock ✨✨✨✨✨✨✨✨✨✨✨")
+
+
 
 //请求响应头
 app.all('*', function (req, res, next) {
@@ -16,6 +19,10 @@ app.all('*', function (req, res, next) {
     res.header('Access-Control-Allow-Credentials', "true");// //允许跨域后session的存取
     next();
 });
+/**第三方插件，接收post数据 */
+app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+// app.use(bodyParser.json())
 
 /**接口路由 */
 app.get('/home', async (req, res) => {

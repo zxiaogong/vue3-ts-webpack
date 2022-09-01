@@ -5,14 +5,15 @@ import { ElMessage } from 'element-plus'
 import Qs from 'qs'
 
 async function request({ method, url, data = {}, params = {}, isTip = true }: RequestTypes) {
+    console.log(Qs.stringify(method))
     const res = await http({
         /** 
          *  @Qs.stringify
          * 禁止重复请求
          * */
-        method: Qs.stringify(method),
+        method,
         url,
-        data,
+        data:Qs.stringify(data),
         params,
     })
     if (isTip && res.data.msg) {

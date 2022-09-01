@@ -7,6 +7,13 @@ const testRequest = () => {
   httpApiRequest({
     method: requestTypes.method.GET,
     url: "/home",
+    /**
+     * get请求时，使用params
+     * post请求时，使用data
+     */
+    params:{
+      name:"test"
+    }
   })
 }
 

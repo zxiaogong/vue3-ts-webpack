@@ -3,7 +3,7 @@
 
 - 基于TypeScript搭建的vue3模板，引入boostrap、elemente-plus等ui库可快速进行开发。 
 - 引入axios进行二次封装的http请求方法，可以直接调用发送http请求，无需任何设置。
-- 引入experssda搭建mock模拟后端响应数据，方便测试、调试。
+- 引入experss搭建mock模拟后端响应数据，方便测试、调试。
 - 引入vuex进行状态管理
 - 支持对less、scss等预处理
 - 支持tsx、jsx写法
