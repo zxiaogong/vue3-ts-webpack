@@ -1,5 +1,7 @@
 const { merge } = require("webpack-merge");
 const common = require("./webpack.common");
+const path = require("path");
+const fs = require('fs');
 const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
 /** 
  * 使用 miniCssExtractPlugin 会分离出js和css,
@@ -100,4 +102,16 @@ module.exports = merge(common, {
     ]
 });
 
+function tsLoader() {
+    return {
+        loader: require.resolve('ts-loader'),
+        options: {
+            appendTsxSuffixTo: [
+                /\.vue$/
+            ],
+            transpileOnly: true,
+            configFile: path.join(__dirname, 'tsconfig.json')
+        }
+    }
+}
 
