@@ -1,5 +1,5 @@
 
-import { createRouter, RouteRecordRaw, createWebHistory } from 'vue-router'
+import { createRouter, RouteRecordRaw, createWebHistory,createWebHashHistory } from 'vue-router'
 /**声明数据类型 */
 
 const routers: RouteRecordRaw[] = [

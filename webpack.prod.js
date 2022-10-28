@@ -1,117 +1,51 @@
 const { merge } = require("webpack-merge");
 const common = require("./webpack.common");
-const path = require("path");
-const fs = require('fs');
-const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
-/** 
- * 使用 miniCssExtractPlugin 会分离出js和css,
- * 没有使用也能打包成功，但是会出现清一色js，
- * 开发环境使用的话，会出现更改样式后热加载无效的问题。
- *  */
-const miniCssExtractPlugin = require("mini-css-extract-plugin")
+const TerserPlugin = require("terser-webpack-plugin")
 // 生产环境
 module.exports = merge(common, {
-    devtool: "eval-cheap-module-source-map",
+    devtool: "source-map",
     cache: {
         type: 'filesystem', // 使用文件缓存
     },
     // 生成环境
     mode: "production",
-    module: {
-        strictExportPresence: true,
-        rules: [
-            {
-                test: /\.s?css$/,
-                use: [
-                    {
-                        loader: miniCssExtractPlugin.loader,
-                        options: {
-                            // 当前的css所在的文件相对于打包后的根路径dist的相对路径
-                            publicPath: '../'
-                        }
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                extractComments: false, //不将注释提取到单独的文件中
+                terserOptions: {
+                    output: {
+                        // 是否输出可读性较强的代码，即会保留空格和制表符，默认为输出，为了达到更好的压缩效果，可以设置为false
+                        beautify: false,
+                        // 是否保留代码中的注释，默认为保留，为了达到更好的压缩效果，可以设置为false
+                        comments: false
                     },
-                    "css-loader",
-                    'postcss-loader',
-                ]
-            },
-            {
-                test: /\.less$/,
-                use: [
-                    {
-                        loader: miniCssExtractPlugin.loader,
-                        options: {
-                            // 当前的css所在的文件相对于打包后的根路径dist的相对路径
-                            publicPath: '../'
-                        }
-                    },
-                    "css-loader",
-                    'less-loader',
-                ]
-            },
-            {
-                test: /\.ts$/,
-                exclude: /node_modules/,
-                use: [
-                    tsLoader()
-                ],
-            },
-            {
-                test: /\.tsx$/,
-                exclude: /node_modules/,
-                use: [
-                    "babel-loader", // 代码换成ES5 的代码来做浏览器兼容
-                    tsLoader()
-                ],
-            },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: [
-                    "babel-loader", // 代码换成ES5 的代码来做浏览器兼容
-                ],
-            },
-            {
-                test: /\.vue$/,
-                use: [
-                    "vue-loader",
-                ],
-            },
-            {
-                test: /\.(png|jpe?g|gif|svg|mp3|mp4|mov|wav|wma|avi|flv)$/,
-                use: [
-                    {
-                        loader: "url-loader",
-                        options: {
-                            limit: 1000,
-                            name: "./images/[hash][query].[ext]",
-                            esModule: false
-                        }
+                    compress: {
+                        // 是否在UglifyJS删除没有用到的代码时输出警告信息，默认为输出，可以设置为false关闭这些作用不大的警告
+                        warnings: false,
+                        // 是否删除代码中所有的console语句，默认为不删除，开启后，会删除所有的console语句
+                        drop_console: true,
+                        drop_debugger: true,
+                        // 是否内嵌虽然已经定义了，但是只用到一次的变量，比如将 var x = 1; y = x, 转换成 y = 5, 默认为不转换，为了达到更好的压缩效果，可以设置为false
+                        collapse_vars: true,
+                        // 是否提取出现了多次但是没有定义成变量去引用的静态值，比如将 x = 'xxx'; y = 'xxx'  转换成var a = 'xxxx'; x = a; y = a; 默认为不转换，为了达到更好的压缩效果，可以设置为false
+                        reduce_vars: true,
+                        pure_funcs: ['console.log'] // 移除console
                     }
-                ],
-                type: 'javascript/auto'
+                }
+            }),
+        ],
+        splitChunks: {
+            cacheGroups: {
+                styles: {
+                    name: "styles",
+                    type: "css/mini-extract",
+                    chunks: "all",
+                    enforce: true,
+                },
             },
-
-        ]
+        },
     },
-    plugins: [
-        /**打包，压缩代码用 */
-        new UglifyjsWebpackPlugin(),
-        new miniCssExtractPlugin({
-            filename: "css/[name].[contenthash:8].css"
-        }),
-    ]
-});
-
-function tsLoader() {
-    return {
-        loader: require.resolve('ts-loader'),
-        options: {
-            appendTsxSuffixTo: [
-                /\.vue$/
-            ],
-            transpileOnly: true,
-            configFile: path.join(__dirname, 'tsconfig.json')
-        }
-    }
-}
+})
 

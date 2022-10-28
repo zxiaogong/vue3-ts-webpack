@@ -4,7 +4,9 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ProgressBarPlugin = require("progress-bar-webpack-plugin");
 const { VueLoaderPlugin } = require('vue-loader');
+const miniCssExtractPlugin = require("mini-css-extract-plugin")
 const chalk = require("chalk");
+const WEBPACK_ENV = process.env.WEBPACK_ENV
 module.exports = {
     entry: "./src/render/index",
     output: {
@@ -20,7 +22,10 @@ module.exports = {
             {
                 test: /\.s?css$/,
                 use: [
-                    "style-loader",
+                    WEBPACK_ENV === "development" ?
+                        "style-loader"
+                        :
+                        miniCssExtractPlugin.loader,
                     "css-loader",
                     'postcss-loader',
                 ]
@@ -28,7 +33,10 @@ module.exports = {
             {
                 test: /\.less$/,
                 use: [
-                    "style-loader",
+                    WEBPACK_ENV === "development" ?
+                        "style-loader"
+                        :
+                        miniCssExtractPlugin.loader,
                     "css-loader",
                     'less-loader',
                     'postcss-loader',
@@ -110,7 +118,25 @@ module.exports = {
         new ProgressBarPlugin({
             format: `:msg [:bar] ${chalk.green.bold(":percent")} (:elapsed s)`,
         }), // 进度条
-    ],
+
+    ].concat(notDevPlug()),
+}
+
+
+function notDevPlug() {
+    console.log()
+    if (WEBPACK_ENV !== "development") {
+        return [
+            /**分离css */
+            new miniCssExtractPlugin(
+                {
+                    filename: "css/[name].[contenthash:8].css",
+                    chunkFilename: "css/[name].[contenthash:8].css",
+                }
+            ),
+        ]
+    }
+    return []
 }
 
 function tsLoader() {

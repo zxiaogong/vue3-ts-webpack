@@ -7,7 +7,7 @@ export default () => {
     <div class="layout-root">
       <div class="layout-head"></div>
       <div class="layout-content">
-        <RouterView v-wechat-title={router.currentRoute.value.meta.title}></RouterView>
+        <RouterView></RouterView>
       </div>
     </div>
   )
