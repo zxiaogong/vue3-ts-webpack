@@ -23,7 +23,7 @@ const testRequest = () => {
     <div class="alert alert-primary" role="alert">
       首页
     </div>
-    <el-button type="primary" v-on:click="testRequest">http请求</el-button>
+    <el-button @click="testRequest">请求接口</el-button>
   </div>
 </template>
 <style lang="less" scoped>
