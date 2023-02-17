@@ -47,5 +47,10 @@ module.exports = merge(common, {
             },
         },
     },
+    /**设置打包图片资源大小 */
+    // performance: {
+    //     maxAssetSize: 100 * 1024 * 1024 * 1024,
+    //     maxEntrypointSize: 100 * 1024 * 1024 * 1024,
+    // }
 })
 

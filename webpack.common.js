@@ -76,7 +76,7 @@ module.exports = {
                     {
                         loader: "url-loader",
                         options: {
-                            limit: 1000,
+                            limit: 200*1024,
                             name: "./images/[hash][query].[ext]",
                             esModule: false
                         }
